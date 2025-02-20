@@ -1,0 +1,81 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - 'main'
+      - 'feature/**'
+    tags:
+      - 'v*'
+
+env:
+  GO_VERSION: '1.23.2'
+  ARTIFACT_RETENTION_DAYS: 30
+
+permissions:
+  contents: write
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      build_mode: ${{ steps.detect_mode.outputs.mode }}
+      branch_type: ${{ steps.detect_mode.outputs.branch_type }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - uses: ./.github/actions/detect-build-mode
+        id: detect_mode
+
+  snapshot:
+    needs: setup
+    if: needs.setup.outputs.mode == 'snapshot'
+    strategy:
+      matrix:
+        include:
+          - branch_type: main
+            artifact_name: crosslab-main-snapshot
+          - branch_type: feature
+            artifact_name: crosslab-feature-snapshot
+    uses: ./.github/workflows/goreleaser-build.yml
+    with:
+      build_mode: snapshot
+      args: release --snapshot --clean --skip=publish
+    secrets:
+      github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  prerelease:
+    needs: setup
+    if: needs.setup.outputs.mode == 'prerelease'
+    uses: ./.github/workflows/goreleaser-build.yml
+    with:
+      build_mode: prerelease
+      args: release --clean
+    secrets:
+      github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  release:
+    needs: setup
+    if: needs.setup.outputs.mode == 'release'
+    uses: ./.github/workflows/goreleaser-build.yml
+    with:
+      build_mode: release
+      args: release --clean
+    secrets:
+      github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  artifacts:
+    needs: [setup, snapshot]
+    if: needs.setup.outputs.mode == 'snapshot' && needs.setup.outputs.branch_type == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: crosslab-main-snapshot
+          path: dist/*
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+
+      

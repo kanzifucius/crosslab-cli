@@ -1,0 +1,32 @@
+name: GoReleaser Build
+
+on:
+  workflow_call:
+    inputs:
+      build_mode:
+        required: true
+        type: string
+      args:
+        required: true
+        type: string
+    secrets:
+      github_token:
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.23.2'
+
+      - uses: goreleaser/goreleaser-action@v5
+        with:
+          args: ${{ inputs.args }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }} 
