@@ -10,7 +10,7 @@ on:
         required: true
         type: string
     secrets:
-      github_token:
+      token:
         required: true
 
 jobs:
@@ -29,4 +29,4 @@ jobs:
         with:
           args: ${{ inputs.args }}
         env:
-          GITHUB_TOKEN: ${{ secrets.github_token }} 
+          GITHUB_TOKEN: ${{ secrets.token }} 
