@@ -1,0 +1,45 @@
+name: 'Detect Build Mode'
+description: 'Detects build mode from git ref'
+
+outputs:
+  mode:
+    description: 'Build mode (release, prerelease, snapshot)'
+    value: ${{ steps.set_mode.outputs.mode }}
+  branch_type:
+    description: 'Branch type (release, prerelease, main, feature)'
+    value: ${{ steps.set_mode.outputs.branch_type }}
+
+runs:
+  using: composite
+  steps:
+    - id: set_mode
+      shell: bash
+      # This script determines the build mode and branch type based on the git reference:
+      # 
+      # 1. Tagged Releases (refs/tags/v*):
+      #    - If tag contains "-pre" or "-rc": Sets mode=prerelease, branch_type=prerelease
+      #    - Otherwise: Sets mode=release, branch_type=release
+      #
+      # 2. Main Branch (refs/heads/main):
+      #    - Sets mode=snapshot, branch_type=main
+      #
+      # 3. All Other Branches:
+      #    - Sets mode=snapshot, branch_type=feature
+      run: |
+        if [[ $GITHUB_REF == refs/tags/v* ]]; then
+          if [[ $GITHUB_REF == *"-pre"* || $GITHUB_REF == *"-rc"* ]]; then
+            echo "mode=prerelease" >> $GITHUB_OUTPUT
+            echo "branch_type=prerelease" >> $GITHUB_OUTPUT
+          else
+            echo "mode=release" >> $GITHUB_OUTPUT
+            echo "branch_type=release" >> $GITHUB_OUTPUT
+          fi  
+        elif [[ $GITHUB_REF == refs/heads/main ]]; then
+          echo "mode=snapshot" >> $GITHUB_OUTPUT
+          echo "branch_type=main" >> $GITHUB_OUTPUT
+        else
+          echo "mode=snapshot" >> $GITHUB_OUTPUT
+          echo "branch_type=feature" >> $GITHUB_OUTPUT
+        fi 
+
+        
