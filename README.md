@@ -3,6 +3,36 @@
 A Cobra-based CLI application with Kind cluster and Crossplane provider management capabilities.
 This is a project to enable the creation of a local development environment for crossplane based work such as compostion creation, testing, and development.
 
+# Installation
+
+## Pre-built binaries
+
+Pre-built binaries are available for download from the [releases page](https://github.com/opus2-platform/crosslab-cli/releases).
+
+## Building from source
+
+To build from source, you will need to have Go installed on your system. You can download the latest version of Go from the [Go website](https://go.dev/dl/).
+
+Once Go is installed, you can clone the repository and build the project using the following commands:
+
+```bash
+git clone https://github.com/opus2-platform/crosslab-cli.git
+cd crosslab-cli
+make build
+```
+
+
+MacOS and Linux users can use the `crosslab` binary directly, while Windows users will need to use the `crosslab.exe` binary.
+
+If you use the install script, you can preview what occurs during the install process:
+
+
+To install, run:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/kanzifucius/crosslab-cli/main/install.sh | sh
+```
+
 ## Getting Started
 
 ### Prerequisites
@@ -219,32 +249,6 @@ Release artifacts include:
 ### VS Code Integration
 
 The project includes VS Code configurations for development:
-
-#### Launch Configurations
-
-- `Run CLI` - Run the CLI without arguments
-- `Create Kind Cluster` - Create a new Kind cluster
-- `Install All Providers` - Install all required providers
-- `Install All Providers (Force)` - Force reinstall all providers
-- `List Providers` - List installed providers
-- `Install Specific Provider` - Install a specific provider
-- `Install Specific Provider (Force)` - Force reinstall a specific provider
-- `Debug Current File` - Debug the currently open file
-
-#### Compound Tasks
-
-- `Setup Complete Environment` - Create cluster and install providers
-- `Setup Complete Environment (Force)` - Create cluster and force reinstall providers
-
-#### Tasks
-
-- `Build CLI` - Build the application
-- `Run Tests` - Run all tests
-- `Format Code` - Format Go code
-- `Lint Code` - Run Go linter
-- `Clean Build` - Clean build artifacts
-- `Update Dependencies` - Update Go dependencies
-- `Run Development Build` - Build and run the application
 
 ### Running the Project
 
