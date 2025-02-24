@@ -65,6 +65,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.ref_name == 'main' && 'crosslab-main-snapshot' || 'crosslab-feature-snapshot' }}
+          path: dist/*
+          retention-days: ${{ env.ARTIFACT_RETENTION_DAYS }}
+
   prerelease:
     needs: [setup, build]
     if: needs.setup.outputs.build_mode == 'prerelease'
