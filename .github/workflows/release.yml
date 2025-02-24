@@ -49,13 +49,6 @@ jobs:
   snapshot:
     needs: [setup, build]
     if: needs.setup.outputs.build_mode == 'snapshot'
-    strategy:
-      matrix:
-        include:
-          - branch_type: main
-            artifact_name: crosslab-main-snapshot
-          - branch_type: feature
-            artifact_name: crosslab-feature-snapshot
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
