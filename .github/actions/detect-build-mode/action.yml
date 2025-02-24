@@ -14,6 +14,17 @@ runs:
   steps:
     - id: set_mode
       shell: bash
+      # This script determines the build mode and branch type based on the git reference:
+      # 
+      # 1. Tagged Releases (refs/tags/v*):
+      #    - If tag contains "-pre" or "-rc": Sets mode=prerelease, branch_type=prerelease
+      #    - Otherwise: Sets mode=release, branch_type=release
+      #
+      # 2. Main Branch (refs/heads/main):
+      #    - Sets mode=snapshot, branch_type=main
+      #
+      # 3. All Other Branches:
+      #    - Sets mode=snapshot, branch_type=feature
       run: |
         if [[ $GITHUB_REF == refs/tags/v* ]]; then
           if [[ $GITHUB_REF == *"-pre"* || $GITHUB_REF == *"-rc"* ]]; then
@@ -30,3 +41,7 @@ runs:
           echo "mode=snapshot" >> $GITHUB_OUTPUT
           echo "branch_type=feature" >> $GITHUB_OUTPUT
         fi 
+
+        # Print the outputs
+        echo "mode: $mode"
+        echo "branch_type: $branch_type"
