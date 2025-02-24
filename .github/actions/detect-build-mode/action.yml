@@ -33,7 +33,7 @@ runs:
           else
             echo "mode=release" >> $GITHUB_OUTPUT
             echo "branch_type=release" >> $GITHUB_OUTPUT
-          fi
+          fi  
         elif [[ $GITHUB_REF == refs/heads/main ]]; then
           echo "mode=snapshot" >> $GITHUB_OUTPUT
           echo "branch_type=main" >> $GITHUB_OUTPUT
@@ -42,6 +42,4 @@ runs:
           echo "branch_type=feature" >> $GITHUB_OUTPUT
         fi 
 
-        # Print the outputs
-        echo "mode: $mode"
-        echo "branch_type: $branch_type"
+        
